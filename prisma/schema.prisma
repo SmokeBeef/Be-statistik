@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model player {
+  id           Int    @id @default(autoincrement())
+  name         String
+  numberJersey String
+  position     String
+
+  team_id Int
+
+  // relation
+  goals           goal[]
+  injurys         injury[]
+  fouls           foul[]
+  cards           card[]
+  team            team           @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  switchPlayerOut switchPlayer[] @relation("PlayerOut")
+  switchPlayerIn  switchPlayer[] @relation("PlayerIn")
+}
+
+model team {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  // relation
+  match1         match[]          @relation("homeTeam")
+  match2         match[]          @relation("awayTeam")
+  player         player[]
+  offset         offset[]
+  ballPossession ballPossession[]
+}
+
+model match {
+  id       Int @id @default(autoincrement())
+  homeTeam Int
+  awayTeam Int
+
+  // relation
+  home_team      team             @relation("homeTeam", fields: [homeTeam], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  away_team      team             @relation("awayTeam", fields: [awayTeam], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  offset         offset[]
+  goal           goal[]
+  foul           foul[]
+  injury         injury[]
+  ballPossession ballPossession[]
+  card           card[]
+  switchPlayer   switchPlayer[]
+}
+
+model offset {
+  offset_id      Int   @id @default(autoincrement())
+  match_id       Int
+  offset_team_id Int
+  offset_time    Int
+  match          match @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  offset_team    team  @relation(fields: [offset_team_id], references: [id])
+}
+
+model goal {
+  id        Int @id @default(autoincrement())
+  match_id  Int
+  player_id Int
+  goal_time Int
+
+  // relation
+  player player @relation(fields: [player_id], references: [id])
+  match  match  @relation(fields: [match_id], references: [id])
+}
+
+model foul {
+  id        Int    @id @default(autoincrement())
+  match_id  Int
+  team_id   Int
+  player_id Int
+  type      String
+
+  // relation
+  player player @relation(fields: [player_id], references: [id])
+  match  match  @relation(fields: [match_id], references: [id])
+}
+
+model injury {
+  id          Int    @id @default(autoincrement())
+  match_id    Int
+  player_id   Int
+  injury_type String
+
+  // relation
+  player player @relation(fields: [player_id], references: [id])
+  match  match  @relation(fields: [match_id], references: [id])
+}
+
+model ballPossession {
+  possession_id   Int @id @default(autoincrement())
+  match_id        Int
+  team_id         Int
+  possession_time Int
+
+  // relation
+  match match @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  team  team  @relation(fields: [team_id], references: [id])
+}
+
+model card {
+  card_id   Int    @id @default(autoincrement())
+  match_id  Int
+  player_id Int
+  card_type String
+  card_time Int
+
+  // relation
+  match  match  @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player player @relation(fields: [player_id], references: [id])
+}
+
+model switchPlayer {
+  switch_id     Int @id @default(autoincrement())
+  match_id      Int
+  player_out_id Int
+  player_in_id  Int
+  switch_time   Int
+
+  // relation
+  match      match  @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  player_out player @relation("PlayerOut", fields: [player_out_id], references: [id])
+  player_in  player @relation("PlayerIn", fields: [player_in_id], references: [id])
+}
