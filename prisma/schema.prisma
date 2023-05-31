@@ -31,6 +31,7 @@ model player {
 model team {
   id   Int    @id @default(autoincrement())
   name String
+  logo String
 
   // relation
   match1         match[]          @relation("homeTeam")

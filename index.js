@@ -3,8 +3,8 @@ const cors = require("cors")
 const bodyParser = require("body-parser")
 const teamRoute = require("./routes/teamRoute")
 const playerRoute = require("./routes/playerRoute")
-
-require("dotenv").config()
+const dotenv = require("dotenv")
+dotenv.config()
 
 const PORT = process.env.PORT || 8000
 const app = express()

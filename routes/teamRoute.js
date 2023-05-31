@@ -4,7 +4,7 @@ const control = require("../controller/team")
 
 
 app.get("/", control.getAll)
-app.post("/add", control.add)
+app.post("/add", control.upload, control.add)
 app.delete("/del/:id", control.delete)
 
 
