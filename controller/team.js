@@ -1,26 +1,28 @@
 const { PrismaClient } = require("@prisma/client")
 const { response } = require("../utils/wrapper")
 const multer = require("multer")
+const fs = require("fs")
 const path = require("path")
 const storage = multer.diskStorage({
     destination: (req, res, cb) => {
         cb(null, path.join(__dirname, "../public/team"))
     },
     filename: (req, file, cb) => {
-        cb(null, `logo-team-${Date.now()}-${file.filename}`)
+        cb(null, `logo-team-${Date.now()}-${file.originalname}`)
     }
 })
 
-exports.upload = multer({
+const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
-        const mimtype = ["/jpg", "/jpeg", "/png"]
-        if (file.mimetype !== mimtype) cb("type not file support", false)
+        const mimtype = ["image/jpg", "image/jpeg", "image/png"]
+        console.log(file.mimetype);
+        if (!mimtype.includes(file.mimetype)) return cb("type not file support", false)
 
         const size = file.size
-        if (size > 2 * 1024 * 1024) cb("file too large", false)
+        if (size > 2 * 1024 * 1024) return cb("file too large", false)
 
-        cb(null, true)
+        return cb(null, true)
     }
 }).single("logo")
 
@@ -29,24 +31,26 @@ const prisma = new PrismaClient()
 
 exports.add = async (req, res) => {
     try {
-        this.upload(req, res, async error => {
+        upload(req, res, async error => {
             if (error) return res.json({ msg: error })
-            console.log(req.headers);
+            if (!req.file) return response(res, "nothing to upload", null, 404)
+            console.log(req.body.logo);
+            console.log(req.file);
             const payload = {
-                name: req.body.name
+                name: req.body.name,
+                logo: req.file.filename
             }
             console.log(payload);
             const result = await prisma.team.create({
-                data: {
-                    name: payload.name
-                }
+                data: payload
+            
             })
-            console.log(result);
-        })
+        console.log(result);
         return response(res, "add team", result, 201)
-    } catch (error) {
-        return response(res, error.message, error, 400)
-    }
+    })
+} catch (error) {
+    return response(res, error.message, error, 400)
+}
 }
 
 exports.getAll = async (req, res) => {
@@ -74,6 +78,12 @@ exports.delete = async (req, res) => {
                 id: id
             }
         })
+        if(result) {
+            fs.unlink(`${path.join(__dirname+"/../public/team/"+ result.logo)}`, err => {
+                if(err) console.log(err);
+
+            })
+        }
         console.log(result);
         return response(res, "delete team", result, 200)
 

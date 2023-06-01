@@ -5,35 +5,36 @@ const prisma = new PrismaClient()
 
 
 exports.add = async (req, res) => {
-    // try {
-    const payload = {
-        name: req.body.name,
-        numberJersey: req.body.numberJersey,
-        position: req.body.position,
-        team_id: Number(req.body.team_id)
-    }
-    console.log(payload);
-    const cekJersey = await prisma.player.findMany({
-        where: {
-            AND: [
-                { numberJersey: payload.numberJersey },
-                { team_id: payload.team_id }
-            ]
+    try {
+        const payload = {
+            name: req.body.name,
+            numberJersey: req.body.numberJersey,
+            position: req.body.position,
+            status: req.body.status,
+            team_id: Number(req.body.team_id)
         }
-    })
+        console.log(payload);
+        const cekJersey = await prisma.player.findMany({
+            where: {
+                AND: [
+                    { numberJersey: payload.numberJersey },
+                    { team_id: payload.team_id }
+                ]
+            }
+        })
 
-    console.log("result ", cekJersey);
-    if (cekJersey.length !== 0) return response(res, "Number Jersey already used", null, 409)
+        console.log("result ", cekJersey);
+        if (cekJersey.length !== 0) return response(res, "Number Jersey already used", null, 409)
 
-    const result = await prisma.player.create({
-        data: payload
-    })
+        const result = await prisma.player.create({
+            data: payload
+        })
 
-    return response(res, "add a player", result, 201)
+        return response(res, "add a player", result, 201)
 
-    // } catch (error) {
-    //     return response(res, error.message, error, 400)
-    // }
+    } catch (error) {
+        return response(res, error.message, error, 400)
+    }
 }
 
 exports.getAll = async (req, res) => {
@@ -63,20 +64,24 @@ exports.getAll = async (req, res) => {
 
 }
 
-exports.getByTeam = async (req,res) => {
+exports.getByTeam = async (req, res) => {
     try {
 
         const payload = Number(req.params.id)
-        if(!payload) return res.status(409)
+        const status = req.params.status
+        if (!payload) return res.status(404)
         const result = await prisma.player.findMany({
             where: {
-                team_id: payload
+                AND: [
+                    {team_id: payload},
+                    {status: status}
+                ]
             }
         })
         console.log("get by team id ", result);
         return response(res, "success get player by id", result, 200)
     } catch (error) {
-        return response(res, error.message,error, 500)
+        return response(res, error.message, error, 500)
     }
 }
 

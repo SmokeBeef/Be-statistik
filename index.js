@@ -3,6 +3,7 @@ const cors = require("cors")
 const bodyParser = require("body-parser")
 const teamRoute = require("./routes/teamRoute")
 const playerRoute = require("./routes/playerRoute")
+const matchRoute = require("./routes/matchRoute")
 const dotenv = require("dotenv")
 dotenv.config()
 
@@ -15,8 +16,11 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(cors())
 
+app.use(express.static("./public"))
 app.use("/team", teamRoute)
 app.use("/player", playerRoute)
+app.use("/match", matchRoute)
+
 
 app.listen(PORT, () => {
     console.log(`Listen on port ${PORT}`);

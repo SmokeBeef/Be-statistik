@@ -10,11 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  main
+  cadangan
+}
+
 model player {
   id           Int    @id @default(autoincrement())
   name         String
   numberJersey String
   position     String
+  status       Status
 
   team_id Int
 
