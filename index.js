@@ -4,6 +4,8 @@ const bodyParser = require("body-parser")
 const teamRoute = require("./routes/teamRoute")
 const playerRoute = require("./routes/playerRoute")
 const matchRoute = require("./routes/matchRoute")
+const goalRoute = require("./routes/goalRoute")
+const cardRoute = require("./routes/cardRoute")
 const dotenv = require("dotenv")
 dotenv.config()
 
@@ -12,14 +14,16 @@ const app = express()
 
 
 // app.use(bodyParser.urlencoded({extended: false}))
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(cors())
 
 app.use(express.static("./public"))
 app.use("/team", teamRoute)
 app.use("/player", playerRoute)
+app.use("/goal", goalRoute)
 app.use("/match", matchRoute)
+app.use("/card", cardRoute)
 
 
 app.listen(PORT, () => {

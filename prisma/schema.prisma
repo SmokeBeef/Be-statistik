@@ -65,7 +65,7 @@ model match {
 }
 
 model offset {
-  offset_id      Int   @id @default(autoincrement())
+  id             Int   @id @default(autoincrement())
   match_id       Int
   offset_team_id Int
   offset_time    Int
@@ -85,11 +85,11 @@ model goal {
 }
 
 model foul {
-  id        Int    @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   match_id  Int
   team_id   Int
   player_id Int
-  type      String
+  type      String?
 
   // relation
   player player @relation(fields: [player_id], references: [id])
@@ -108,7 +108,7 @@ model injury {
 }
 
 model ballPossession {
-  possession_id   Int @id @default(autoincrement())
+  id              Int @id @default(autoincrement())
   match_id        Int
   team_id         Int
   possession_time Int
@@ -119,7 +119,7 @@ model ballPossession {
 }
 
 model card {
-  card_id   Int    @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   match_id  Int
   player_id Int
   card_type String
@@ -131,7 +131,7 @@ model card {
 }
 
 model switchPlayer {
-  switch_id     Int @id @default(autoincrement())
+  id            Int @id @default(autoincrement())
   match_id      Int
   player_out_id Int
   player_in_id  Int

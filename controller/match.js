@@ -11,8 +11,8 @@ exports.add = async (req, res) => {
             homeTeam: Number(req.body.homeTeam),
             awayTeam: Number(req.body.awayTeam),
         }
-        if(!payload.awayTeam || !payload.homeTeam){
-        return response(res, "team not found", null, 400)
+        if (!payload.awayTeam || !payload.homeTeam) {
+            return response(res, "team not found", null, 400)
         }
 
         const result = await match.create({
@@ -27,25 +27,33 @@ exports.add = async (req, res) => {
     }
 }
 
-exports.spesifyMatch = async (req,res) => {
+exports.spesifyMatch = async (req, res) => {
     try {
-        const id = req.params.id
-        const result = await match.findUnique({
+        const id = Number(req.params.id)
+        console.log(id);
+        const result = await match.findFirst({
             where: {
                 id: id
             },
-            include: {
+            select: {
                 home_team: {
-
+                    select: {
+                        name: true
+                    }
                 },
-                // ballPossession: true,
+                away_team: {
+                    select: {
+                        name: true
+                    }
+                },
+                ballPossession: true,
                 card: {
-                    include: {
+                    select: {
                         player: true
                     }
                 },
                 goal: {
-                    include: {
+                    select: {
                         player: true
                     }
                 },
@@ -63,15 +71,21 @@ exports.findAll = async (req, res) => {
     try {
 
         const result = await match.findMany({
-            include:{
-                home_team: true,
-                away_team: true,
+            include: {
+                home_team: {
+                    select: {
+                        name: true
+                    }
+                },
+                away_team: {
+                    select: {
+                        name: true
+                    }
+                },
+
                 
-                goal: {
-                    
-                }
             },
-            
+
         })
         return response(res, "success get all", result, 200)
     } catch (error) {
