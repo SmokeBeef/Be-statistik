@@ -39,6 +39,7 @@ exports.spesifyMatch = async (req, res) => {
                 home_team: {
                     select: {
                         name: true,
+                        logo: true,
                         player: {
                             orderBy: {
                                 status: "asc"
@@ -85,6 +86,7 @@ exports.spesifyMatch = async (req, res) => {
                 away_team: {
                     select: {
                         name: true,
+                        logo: true,
                         player: {
                             orderBy: {
                                 status: "asc"
