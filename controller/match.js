@@ -41,13 +41,23 @@ exports.spesifyMatch = async (req, res) => {
                         name: true,
                         player: {
                             orderBy: {
-                                status: "desc"
+                                status: "asc"
                             },
                             select: {
                                 name: true,
                                 numberJersey: true,
                                 position: true,
                                 status: true,
+                                switchPlayerIn: {
+                                    where: {
+                                        match_id: id
+                                    }
+                                },
+                                switchPlayerOut: {
+                                    where: {
+                                        match_id: id
+                                    }
+                                },
                                 team: {
                                     select: {
                                         name: true
@@ -77,13 +87,23 @@ exports.spesifyMatch = async (req, res) => {
                         name: true,
                         player: {
                             orderBy: {
-                                status: "desc"
+                                status: "asc"
                             },
                             select: {
                                 name: true,
                                 numberJersey: true,
                                 position: true,
                                 status: true,
+                                switchPlayerIn: {
+                                    where: {
+                                        match_id: id
+                                    }
+                                },
+                                switchPlayerOut: {
+                                    where: {
+                                        match_id: id
+                                    }
+                                },
                                 team: {
                                     select: {
                                         name: true
@@ -105,13 +125,14 @@ exports.spesifyMatch = async (req, res) => {
                         }
                     }
                 },
-                // ballPossession: true,
+                ballPossession: true,
+                offset: true
                 
                 
 
             }
         })
-
+            
         return response(res, "get detail match", result, 200)
     } catch (error) {
         return response(res, error.message, error, 400)

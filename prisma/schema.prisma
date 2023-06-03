@@ -111,7 +111,7 @@ model ballPossession {
   id              Int @id @default(autoincrement())
   match_id        Int
   team_id         Int
-  possession_time Int
+  possession_time Float
 
   // relation
   match match @relation(fields: [match_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
