@@ -38,25 +38,76 @@ exports.spesifyMatch = async (req, res) => {
             select: {
                 home_team: {
                     select: {
-                        name: true
+                        name: true,
+                        player: {
+                            orderBy: {
+                                status: "desc"
+                            },
+                            select: {
+                                name: true,
+                                numberJersey: true,
+                                position: true,
+                                status: true,
+                                team: {
+                                    select: {
+                                        name: true
+                                    }
+                                },
+                                cards: {
+
+                                    where: {
+                                        match_id: id
+                                    }
+                                },
+
+                                goals: {
+                                    where: {
+                                        match_id: id,
+
+                                    },
+
+                                }
+                                ,
+                            }
+                        }
                     }
                 },
                 away_team: {
                     select: {
-                        name: true
+                        name: true,
+                        player: {
+                            orderBy: {
+                                status: "desc"
+                            },
+                            select: {
+                                name: true,
+                                numberJersey: true,
+                                position: true,
+                                status: true,
+                                team: {
+                                    select: {
+                                        name: true
+                                    }
+                                },
+                                cards: {
+                                    where: {
+                                        match_id: id
+                                    }
+                                },
+                                goals: {
+                                    where: {
+                                        match_id: id,
+
+                                    },
+                                    
+                                },
+                            }
+                        }
                     }
                 },
-                ballPossession: true,
-                card: {
-                    select: {
-                        player: true
-                    }
-                },
-                goal: {
-                    select: {
-                        player: true
-                    }
-                },
+                // ballPossession: true,
+                
+                
 
             }
         })
@@ -71,25 +122,26 @@ exports.findAll = async (req, res) => {
     try {
 
         const result = await match.findMany({
-            include: {
+            select: {
+                id: true,
                 home_team: {
                     select: {
-                        name: true
+                        name: true,
+                        id: true
                     }
                 },
                 away_team: {
                     select: {
-                        name: true
+                        name: true,
+                        id: true
                     }
-                },
-
-                
-            },
-
+                }
+            }
         })
+        console.log(result);
         return response(res, "success get all", result, 200)
     } catch (error) {
-
+        console.log(error);
         return response(res, error.message, error, 400)
     }
 }

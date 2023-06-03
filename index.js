@@ -6,6 +6,7 @@ const playerRoute = require("./routes/playerRoute")
 const matchRoute = require("./routes/matchRoute")
 const goalRoute = require("./routes/goalRoute")
 const cardRoute = require("./routes/cardRoute")
+const ballPosRoute = require("./routes/ballPosRoute")
 const dotenv = require("dotenv")
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.use("/player", playerRoute)
 app.use("/goal", goalRoute)
 app.use("/match", matchRoute)
 app.use("/card", cardRoute)
+app.use("/bp", ballPosRoute)
 
 
 app.listen(PORT, () => {
